@@ -22,7 +22,23 @@ const server = http.createServer((req, res) => {
     req.on("end", () => {
       try {
         const parsedData = JSON.parse(receivedData);
+        if (
+          typeof parsedData.name != "string" ||
+          parsedData.name.trim() === ""
+        ) {
+          res.setHeader("Content-Type", "application/json");
 
+          res.statusCode = 400;
+          res.end(JSON.stringify({ error: "Invalid name" }));
+          return;
+        }
+
+        if (!["low", "medium", "high"].includes(parsedData.priority)) {
+          res.setHeader("Content-Type", "application/json");
+          res.statusCode = 400;
+          res.end(JSON.stringify({ error: "invalid priority" }));
+          return;
+        }
         const responseData = {
           job: parsedData,
         };
