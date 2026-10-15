@@ -1,12 +1,9 @@
 const http = require("http");
-
+const message = require("./messages")
 const server = http.createServer((req, res) => {
   console.log(req.method, req.url);
 
-  if (req.url === "/" && req.method === "GET") {
-    const message = {
-      message_content: "hello from NodeForge",
-    };
+if (req.url === "/" && req.method === "GET") {
 
     res.setHeader("Content-Type", "application/json");
     res.end(JSON.stringify(message));
