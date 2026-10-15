@@ -1,10 +1,10 @@
 const http = require("http");
-const message = require("./messages")
+const message = require("./messages");
+const jobValidator = require("./Jobs");
 const server = http.createServer((req, res) => {
   console.log(req.method, req.url);
 
-if (req.url === "/" && req.method === "GET") {
-
+  if (req.url === "/" && req.method === "GET") {
     res.setHeader("Content-Type", "application/json");
     res.end(JSON.stringify(message));
   } else if (req.url === "/about" && req.method === "GET") {
@@ -19,23 +19,15 @@ if (req.url === "/" && req.method === "GET") {
     req.on("end", () => {
       try {
         const parsedData = JSON.parse(receivedData);
-        if (
-          typeof parsedData.name != "string" ||
-          parsedData.name.trim() === ""
-        ) {
+        const result = jobValidator(parsedData);
+        if (result.error) {
           res.setHeader("Content-Type", "application/json");
 
           res.statusCode = 400;
-          res.end(JSON.stringify({ error: "Invalid name" }));
+          res.end(JSON.stringify({ error: result.error }));
           return;
         }
 
-        if (!["low", "medium", "high"].includes(parsedData.priority)) {
-          res.setHeader("Content-Type", "application/json");
-          res.statusCode = 400;
-          res.end(JSON.stringify({ error: "invalid priority" }));
-          return;
-        }
         const responseData = {
           job: parsedData,
         };
