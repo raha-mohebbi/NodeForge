@@ -1,9 +1,10 @@
-const http = require("http");
-const routes = require("./routes");
-const server = http.createServer((req, res) => {
-  routes(req, res);
-});
+const express = require('express')
+const app = express()
+const routes= require("./routes")
+const port = 5000
+app.use(express.json())
+app.use(routes)
 
-server.listen(5000, () => {
+app.listen(port, () => {
   console.log("NodeForge server is running on port 5000");
 });
