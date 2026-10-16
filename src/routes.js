@@ -1,53 +1,43 @@
+
+const express = require("express");
+const router = express.Router();
+
 const message = require("./messages");
 const jobValidator = require("./Jobs");
-const routes =(req,res)=>{
- if (req.url === "/" && req.method === "GET") {
-    res.setHeader("Content-Type", "application/json");
-    res.end(JSON.stringify(message));
-  } else if (req.url === "/about" && req.method === "GET") {
-    res.end("about");
-  } else if (req.url === "/jobs" && req.method === "POST") {
-    let receivedData = "";
 
-    req.on("data", (chunk) => {
-      receivedData += chunk;
+// GET /
+router.get("/", (req, res) => {
+  res.json(message);
+});
+
+// GET /about
+router.get("/about", (req, res) => {
+  res.send("about");
+});
+
+// POST /jobs
+router.post("/jobs", (req, res) => {
+  const parsedData = req.body;
+  const result = jobValidator(parsedData);
+
+  if (result.error) {
+    return res.status(400).json({
+      error: result.error,
     });
-
-    req.on("end", () => {
-      try {
-        const parsedData = JSON.parse(receivedData);
-        const result = jobValidator(parsedData);
-        if (result.error) {
-          res.setHeader("Content-Type", "application/json");
-
-          res.statusCode = 400;
-          res.end(JSON.stringify({ error: result.error }));
-          return;
-        }
-
-        const responseData = {
-          job: parsedData,
-        };
-
-        res.setHeader("Content-Type", "application/json");
-        res.end(JSON.stringify(responseData));
-
-        console.log(parsedData);
-      } catch (error) {
-        res.statusCode = 400;
-        res.setHeader("Content-Type", "application/json");
-        res.end(
-          JSON.stringify({
-            error: "Invalid JSON body",
-          }),
-        );
-      }
-    });
-  } else {
-    res.statusCode = 404;
-    res.end("404");
   }
 
-}
+  const responseData = {
+    job: parsedData,
+  };
 
-module.exports = routes;
+  console.log(parsedData);
+
+  res.json(responseData);
+});
+
+// 404 - Not Found
+router.use((req, res) => {
+  res.status(404).send("404");
+});
+
+module.exports = router;
