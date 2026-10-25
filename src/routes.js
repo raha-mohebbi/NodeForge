@@ -1,9 +1,9 @@
 
 const express = require("express");
 const router = express.Router();
+const jobsController = require("./controllers/jobsController");
 
 const message = require("./messages");
-const jobValidator = require("./Jobs");
 
 // GET /
 router.get("/", (req, res) => {
@@ -16,24 +16,7 @@ router.get("/about", (req, res) => {
 });
 
 // POST /jobs
-router.post("/jobs", (req, res) => {
-  const parsedData = req.body;
-  const result = jobValidator(parsedData);
-
-  if (result.error) {
-    return res.status(400).json({
-      error: result.error,
-    });
-  }
-
-  const responseData = {
-    job: parsedData,
-  };
-
-  console.log(parsedData);
-
-  res.json(responseData);
-});
+router.post("/jobs", jobsController);
 
 // 404 - Not Found
 router.use((req, res) => {
