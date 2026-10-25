@@ -1,13 +1,18 @@
 {
   "name": "nodeforge",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "A Node.js and Express API practice project",
+  "main": "src/server.js",
   "scripts": {
+    "start": "node src/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "nodejs",
+    "express",
+    "rest-api"
+  ],
+  "author": "Raha Mohebi",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
